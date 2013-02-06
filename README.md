@@ -19,7 +19,7 @@ The options object is passed to fs.watchFile but can also be used to provide add
 * `'filter'` - Can be a function or RegExp or string.  If it's a string then that will be considered an extension to check.  Your callback will only be notified about files that pass your filter.
 
 <pre>
-  watchdir.watchDirectory('src', {filter:'.js'}, function (filename, curr, prev, change) {
+  var unwatch = watchdir.watchDirectory('src', {filter:'.js'}, function (filename, curr, prev, change) {
     if (change == 'created') {
       // filename is a new file
     } else if (change == 'deleted') {
@@ -27,5 +27,8 @@ The options object is passed to fs.watchFile but can also be used to provide add
     } else { // change == 'modified'
       // filename was changed
     }
-  })
+  });
+
+  // later on to unwatch, just call the previously returned function
+  unwatch();
 </pre>  
