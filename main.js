@@ -42,7 +42,7 @@
     watchedFiles = {};
     notifyListener = function(filename, curr, prev, change) {
       if (filter(filename)) {
-        return listener(filename, change);
+        return listener(filename, curr, prev, change);
       }
     };
     fsListener = function(filename, depth, curr, prev) {
