@@ -67,7 +67,7 @@ exports.watchDirectory = (dirname, options, listener) ->
             if not watchedFiles[filename]?
                 boundListener = fsListener.bind @, filename, depth
                 watchedFiles[filename] = boundListener
-                fs.watchFile filename, boundListener
+                fs.watchFile filename, options, boundListener
                 if initial
                     notifyListener filename, stats, stats, initial
         return

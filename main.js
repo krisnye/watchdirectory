@@ -81,7 +81,7 @@
         if (!(watchedFiles[filename] != null)) {
           boundListener = fsListener.bind(this, filename, depth);
           watchedFiles[filename] = boundListener;
-          fs.watchFile(filename, boundListener);
+          fs.watchFile(filename, options, boundListener);
           if (initial) {
             notifyListener(filename, stats, stats, initial);
           }
