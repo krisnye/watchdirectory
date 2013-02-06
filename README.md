@@ -1,4 +1,4 @@
-watchDirectory
+watchdir
 ==============
 
 Similar to node fs.watchFile but watches a directory recursively and lets you unwatch as well
@@ -6,9 +6,9 @@ Similar to node fs.watchFile but watches a directory recursively and lets you un
 ## Purpose
 
 This module provides the ability to recursively watch a directory for changes.
-Unlike all the other similar modules, this one can unwatch directories as well, which is why I wrote it.
+Unlike similar modules, this one can unwatch as well.
 
-#### require('watchdir').watchDirectory(root, [options,] callback)
+#### watchdir.watchDirectory(root, [options,] callback)
 
 The first argument is the directory root you want to watch. 
 
@@ -20,11 +20,16 @@ The options object is passed to fs.watchFile but can also be used to provide add
 
 <pre>
   var unwatch = watchdir.watchDirectory('src', {filter:'.js'}, function (filename, curr, prev, change) {
-    if (change == 'created') {
+    if (change == 'initial') {
+      // filename found during initial pass
+    }
+    else if (change == 'created') {
       // filename is a new file
-    } else if (change == 'deleted') {
+    }
+    else if (change == 'deleted') {
       // filename was removed
-    } else { // change == 'modified'
+    }
+    else if (change == 'modified') {
       // filename was changed
     }
   });
