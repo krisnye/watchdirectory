@@ -3,6 +3,12 @@ watchdirectory
 
 Similar to node fs.watchFile but watches a directory recursively and lets you unwatch as well
 
+## Install
+
+<pre>
+  npm install watchdirectory
+</pre>
+
 ## Purpose
 
 This module provides the ability to recursively watch a directory for changes.
