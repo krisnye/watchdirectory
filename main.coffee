@@ -33,7 +33,7 @@ exports.watchDirectory = (dirname, options, listener) ->
 
     notifyListener = (filename, curr, prev, change) ->
         if filter filename
-            listener filename, change
+            listener filename, curr, prev, change
 
     fsListener = (filename, depth, curr, prev) ->
         change =
