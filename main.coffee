@@ -14,10 +14,14 @@ exports.watchDirectory = (dirname, options, listener) ->
     options.recursive ?= true
     # change message for initial pass. Use false for no initial pass.
     options.initial ?= 'initial'
+    options.exclude ?=
+        node_modules: true
     # options.filter = string extension or RegExp or function
 
     filter = (name) ->
-        if not options.filter?
+        if options.exclude[name]
+            false
+        else if not options.filter?
             true
         else if typeof options.filter is 'string'
             ext = options.filter
