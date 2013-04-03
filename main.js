@@ -7,7 +7,7 @@
   np = require('path');
 
   exports.watchDirectory = function(dirname, options, listener) {
-    var filter, fsListener, initial, notifyListener, unwatchFile, watchFile, watchedFiles, _ref, _ref1, _ref2, _ref3;
+    var filter, fsListener, initial, matches, notifyListener, unwatchFile, watchFile, watchedFiles, _ref, _ref1, _ref2, _ref3, _ref4;
     if (!(listener != null)) {
       listener = options;
       options = {};
@@ -24,19 +24,31 @@
     if ((_ref3 = options.initial) == null) {
       options.initial = 'initial';
     }
-    filter = function(name) {
+    if ((_ref4 = options.exclude) == null) {
+      options.exclude = {
+        node_modules: true
+      };
+    }
+    matches = function(name, filter, defaultValue) {
       var ext;
-      if (!(options.filter != null)) {
-        return true;
-      } else if (typeof options.filter === 'string') {
-        ext = options.filter;
+      if (!(filter != null)) {
+        return defaultValue;
+      } else if (typeof filter === 'string') {
+        ext = filter;
         return name.indexOf(ext, name.length - ext.length) !== -1;
-      } else if (options.filter.constructor === RegExp) {
-        return options.filter.test(name);
-      } else if (typeof options.filter === 'function') {
-        return options.filter(name);
+      } else if (filter.constructor === RegExp) {
+        return filter.test(name);
+      } else if (typeof filter === 'function') {
+        return filter(name);
       } else {
-        throw new Error("Invalid filter value: " + options.filter);
+        return filter[name] === true;
+      }
+    };
+    filter = function(name) {
+      if (matches(name, options.exclude, false)) {
+        return false;
+      } else {
+        return matches(name, options.include, true);
       }
     };
     watchedFiles = {};
@@ -60,7 +72,7 @@
       return delete watchedFiles[filename];
     };
     watchFile = function(filename, depth, stats) {
-      var boundListener, child, _i, _len, _ref4;
+      var boundListener, child, _i, _len, _ref5;
       if (depth == null) {
         depth = 0;
       }
@@ -69,12 +81,14 @@
       }
       if (stats.nlink > 0) {
         if (stats.isDirectory()) {
-          if (depth === 0 || options.recursive) {
-            _ref4 = fs.readdirSync(filename);
-            for (_i = 0, _len = _ref4.length; _i < _len; _i++) {
-              child = _ref4[_i];
-              child = np.join(filename, child);
-              watchFile(child, depth + 1);
+          if (!matches(filename, options.exclude, false)) {
+            if (depth === 0 || options.recursive) {
+              _ref5 = fs.readdirSync(filename);
+              for (_i = 0, _len = _ref5.length; _i < _len; _i++) {
+                child = _ref5[_i];
+                child = np.join(filename, child);
+                watchFile(child, depth + 1);
+              }
             }
           }
         }

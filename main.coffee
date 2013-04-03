@@ -67,10 +67,12 @@ exports.watchDirectory = (dirname, options, listener) ->
         if stats.nlink > 0
             if stats.isDirectory()
                 # also watch all children
-                if depth is 0 or options.recursive
-                    for child in fs.readdirSync filename
-                        child = np.join filename, child
-                        watchFile child, depth + 1
+                # exclude directories in exclude list
+                if not matches filename, options.exclude, false
+                    if depth is 0 or options.recursive
+                        for child in fs.readdirSync filename
+                            child = np.join filename, child
+                            watchFile child, depth + 1
 
             if not watchedFiles[filename]?
                 boundListener = fsListener.bind @, filename, depth
