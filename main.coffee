@@ -18,20 +18,24 @@ exports.watchDirectory = (dirname, options, listener) ->
         node_modules: true
     # options.filter = string extension or RegExp or function
 
-    filter = (name) ->
-        if options.exclude[name]
-            false
-        else if not options.filter?
-            true
-        else if typeof options.filter is 'string'
-            ext = options.filter
+    matches = (name, filter, defaultValue) ->
+        if not filter?
+            defaultValue
+        else if typeof filter is 'string'
+            ext = filter
             name.indexOf(ext, name.length - ext.length) isnt -1
-        else if options.filter.constructor is RegExp
-            options.filter.test name
-        else if typeof options.filter is 'function'
-            options.filter name
+        else if filter.constructor is RegExp
+            filter.test name
+        else if typeof filter is 'function'
+            filter name
         else
-            throw new Error "Invalid filter value: #{options.filter}"
+            filter[name] is true
+
+    filter = (name) ->
+        if matches name, options.exclude, false
+            false
+        else
+            matches name, options.include, true
 
     watchedFiles = {}   # filename => bound listener
 
