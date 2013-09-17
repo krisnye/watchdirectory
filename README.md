@@ -22,7 +22,8 @@ The options object is passed to fs.watchFile but can also be used to provide add
 
 * `'initial'` - Defaults to true.  If true then we notify the callback of files during initial directory walk.
 * `'recursive'` - Defaults to true.  Controls the depth of our directory walk.
-* `'filter'` - Can be a function or RegExp or string.  If it's a string then that will be considered an extension to check.  Your callback will only be notified about files that pass your filter.
+* `'include'` - Can be a function or RegExp or string.  If it's a string then that will be considered an extension to check.  Your callback will only be notified about files that match.
+* `'exclude'` - Can be a function or RegExp or string.  If it's a string then that will be considered an extension to check.  Your callback will not be notified about files that match.
 
 <pre>
   var unwatch = watchdirectory.watchDirectory('src', {filter:'.js'}, function (filename, curr, prev, change) {
